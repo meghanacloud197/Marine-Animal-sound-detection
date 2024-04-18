@@ -1,54 +1,60 @@
-# Marine-Animal-sound-detection
-A Machine Learning Approach to Marine Animal Sound Detection and Classification 
+**Marine-Animal-Sound-Detection using CNN and ResNet50**
 
+## Overview
+This project aims to develop a marine animal sound detection system using Convolutional Neural Networks (CNN) and the ResNet50 architecture. The system is designed to identify various marine animal sounds from audio recordings, contributing to marine conservation efforts by monitoring and studying marine ecosystems.
 
-import librosa
-import librosa.display
-import pandas as pd
-import os
-import glob
-import numpy as np
-import matplotlib.pyplot as plt
+## Requirements
+- Python 3.x
+- TensorFlow
+- Keras
+- Librosa
+- NumPy
+- Pandas
+- Matplotlib
 
-from tensorflow.keras.preprocessing.sequence import pad_sequences
+## Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/username/Marine-Animal-sound-detection.git
+   cd Marine-Animal-sound-detection
+   ```
+   
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-base_dir = 'C:\\Users\\medep\\Downloads\\project dataset\\data'
+3. Download the dataset (if applicable) and place it in the `data` directory.
 
-audio_data = []
-labels = []
-dataset = []
+## Usage
+1. Preprocess the data:
+   ```bash
+   python preprocess_data.py
+   ```
 
+2. Train the model:
+   ```bash
+   python train_model.py
+   ```
 
-max_length = 44100  
+3. Evaluate the model:
+   ```bash
+   python evaluate_model.py
+   ```
 
+4. Make predictions:
+   ```bash
+   python predict.py <path_to_audio_file>
+   ```
 
-for label_dir in glob.iglob(os.path.join(base_dir, '*')):
-    label = os.path.basename(label_dir)
-    print(f'Processing label: {label}')
-    
-    for audio_file in glob.iglob(os.path.join(label_dir, '*.wav')):
+## Dataset
+The dataset consists of labeled audio recordings of marine animal sounds. It may be obtained from [https://www.watkins-marine.com/], or a custom dataset can be used. Ensure that the dataset is structured properly and follows the required format. We used a custom dataset of 72 species.
 
-        y, sr = librosa.load(audio_file, sr=None)
-        y = pad_sequences([y], maxlen=max_length, padding='post', truncating='post')[0]
+## Model
+The model architecture used for this project is ResNet50, a deep convolutional neural network known for its performance on image classification tasks. The audio spectrograms are treated as images and fed into the network for classification.
 
-        audio_data.append(y)
-        labels.append(label)
-        duration = librosa.get_duration(path=audio_file)
-        filename = os.path.basename(audio_file)
-        if duration>= 3:
-            slice_size = 3
-            iterations = int((duration-slice_size)/(slice_size-1))
-            iterations += 1
-            initial_offset = (duration - ((iterations*(slice_size-1))+1))/2
-            for i in range(iterations):
-                offset = initial_offset + i*(slice_size-1)
-                dataset.append({"filename": audio_file, "label": label, "offset":offset})
-            
-audio_data = np.array(audio_data)
-labels = np.array(labels)
+## Results
+We obtained a accuracy of 97% on Training Dataset and 92% on Validation Dataset.
 
-print("Data loading and preprocessing complete.")
-print("Shape of audio data array:", audio_data.shape)
-print("Shape of labels array:", labels.shape)
-
-dataset = pd.DataFrame(dataset)
+## License
+This project is licensed under the [MIT License](LICENSE).
